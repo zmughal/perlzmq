@@ -290,7 +290,7 @@ sub get {
     my $optval_len;
 
     for ($opt_type) {
-        when (/^(binary|string)$/) {
+        if ($_ =~ /^(binary|string)$/) {
             # ZMQ_IDENTITY uses binary type and can be at most 255 bytes long
             #
             # ZMQ_LAST_ENDPOINT uses string type and expects a buffer large
@@ -329,9 +329,10 @@ sub get {
                 $optval = buffer_to_scalar($optval_ptr, $optval_len-1);
                 free($optval_ptr);
             }
+            last;
         }
 
-        when ('int') {
+        if ($_ eq 'int') {
             $optval_len = $self->sockopt_sizes->{'int'};
             $self->check_error(
                 'zmq_getsockopt',
@@ -342,9 +343,10 @@ sub get {
                     \$optval_len
                 )
             );
+            last;
         }
 
-        when ('int64_t') {
+        if ($_ eq 'int64_t') {
             $optval_len = $self->sockopt_sizes->{'sint64'};
             $self->check_error(
                 'zmq_getsockopt',
@@ -355,9 +357,10 @@ sub get {
                     \$optval_len
                 )
             );
+            last;
         }
 
-        when ('uint64_t') {
+        if ($_ eq 'uint64_t') {
             $optval_len = $self->sockopt_sizes->{'uint64'};
             $self->check_error(
                 'zmq_getsockopt',
@@ -368,9 +371,10 @@ sub get {
                     \$optval_len
                 )
             );
+            last;
         }
 
-        default {
+        else {
             croak "unknown type $opt_type";
         }
     }
@@ -390,7 +394,7 @@ sub set {
     [% closed_socket_check %]
 
     for ($opt_type) {
-        when (/^(binary|string)$/) {
+        if ($_ =~ /^(binary|string)$/) {
             my ($optval_ptr, $optval_len) = scalar_to_buffer($optval);
             $self->check_error(
                 'zmq_setsockopt',
@@ -401,9 +405,10 @@ sub set {
                     $optval_len
                 )
             );
+            last;
         }
 
-        when ('int') {
+        if ($_ eq 'int') {
             $self->check_error(
                 'zmq_setsockopt',
                 zmq_setsockopt_int(
@@ -413,9 +418,10 @@ sub set {
                     $self->sockopt_sizes->{'int'}
                 )
             );
+            last;
         }
 
-        when ('int64_t') {
+        if ($_ eq 'int64_t') {
             $self->check_error(
                 'zmq_setsockopt',
                 zmq_setsockopt_int64(
@@ -425,9 +431,10 @@ sub set {
                     $self->sockopt_sizes->{'sint64'}
                 )
             );
+            last;
         }
 
-        when ('uint64_t') {
+        if ($_ eq 'uint64_t') {
             $self->check_error(
                 'zmq_setsockopt',
                 zmq_setsockopt_uint64(
@@ -437,9 +444,10 @@ sub set {
                     $self->sockopt_sizes->{'uint64'}
                 )
             );
+            last;
         }
 
-        default {
+        else {
             croak "unknown type $opt_type";
         }
     }
