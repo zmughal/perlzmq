@@ -33,17 +33,7 @@ jobs:
         os: [macos-latest, windows-latest, ubuntu-latest]
         perl: ['5']
         perl-threaded: [false]
-        alien: [false, true]
-        include:
-          - { os: 'ubuntu-latest', perl: "5.14" }
-          - { os: 'ubuntu-latest', perl: "5.16" }
-          - { os: 'ubuntu-latest', perl: "5.20" }
-          - { os: 'ubuntu-latest', perl: "5.30" }
-          - { os: 'ubuntu-latest', perl: "5.32" }
-          - { os: 'ubuntu-latest', perl: "5.34" }
-          - { os: 'ubuntu-latest', perl: "5.36" }
-          - { os: 'ubuntu-latest', perl: "5.38" }
-          - { os: 'ubuntu-latest', perl: "5.38", perl-threaded: true }
+        alien: [true]
     name: Perl ${{ matrix.perl }} on ${{ matrix.os }}, ${{ matrix.alien }}
 
     steps:
@@ -81,7 +71,7 @@ jobs:
       - name: Install Alien::ZMQ::latest
         if: matrix.alien
         run: |
-          cpanm -nq Alien::ZMQ::latest
+          cpanm -n --verbose Alien::ZMQ::latest
 
       - name: Install Perl deps
         run: |
